@@ -1,0 +1,12 @@
+- name: setup mongodb repo
+  ansible.builtin.copy:
+    src: mongodb.repo
+    dest: /etc/yum.repos.d/mongo.repo
+
+- name: installing mongodb client shell
+  ansible.builtin.yum:
+    name: mongodb-org-shell 
+    state: installed
+
+- name: "load schema into {{component}}"
+  ansible.builtin.shell: "mongo --host mongodb.kpdigital.fun </app/schema/{{component}}.js"

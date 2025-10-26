@@ -1,0 +1,30 @@
+- name: Install maven
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: maven-setup
+
+- name: setting up of app
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-setup 
+
+- name: isntalling npm dependencies
+  ansible.builtin.shell: mvn clean package
+  args:
+    chdir: /app
+
+- name: rename jar file
+  ansible.builtin.command: mv target/{{component}}-1.0.jar {{component}}.jar
+  args:
+    chdir: /app
+
+- name: "mongo client & load schema"
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: load-mysql-schema
+
+- name: start application
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: systemd-setup
+

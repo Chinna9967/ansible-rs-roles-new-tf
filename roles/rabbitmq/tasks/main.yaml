@@ -1,0 +1,24 @@
+- name: "configure {{component}} yum repos"
+  ansible.builtin.shell: "{{item}}"
+  loop:
+  - "curl -s https://packagecloud.io/install/repositories/{{component}}/erlang/script.rpm.sh | bash"
+  - "curl -s https://packagecloud.io/install/repositories/{{component}}/{{component}}-server/script.rpm.sh | bash"
+
+- name: "Install {{component}}"
+  ansible.builtin.yum:
+    name: "{{component}}-server"
+    state: installed
+
+- name: "restart {{component}}"
+  ansible.builtin.service:
+    name: "{{component}}-server"
+    state: restarted
+    enabled: true
+
+- name: "Create {{component}} user roboshop if not exists"
+  shell: |
+    rabbitmqctl list_users | grep -w roboshop || rabbitmqctl add_user roboshop roboshop123
+
+
+- name: setup permissions
+  ansible.builtin.shell: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"

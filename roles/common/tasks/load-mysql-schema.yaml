@@ -1,0 +1,13 @@
+- name: installing mysql client
+  ansible.builtin.dnf:
+    name: mysql 
+    state: installed
+
+- name: load schema into shipping
+  ansible.builtin.shell: mysql -h mysql.kpdigital.fun -uroot -pRoboShop@1 < /app/db/schema.sql && mysql -h mysql.kpdigital.fun -uroot -pRoboShop@1 < /app/db/app-user.sql && mysql -h mysql.kpdigital.fun -uroot -pRoboShop@1 < /app/db/master-data.sql 
+
+- name: load schema into shipping
+  ansible.builtin.shell: mysql -h mysql.kpdigital.fun -uroot -pRoboShop@1 < /app/db/app-user.sql 
+
+- name: load schema into shipping
+  ansible.builtin.shell: mysql -h mysql.kpdigital.fun -uroot -pRoboShop@1 < /app/db/master-data.sql 
